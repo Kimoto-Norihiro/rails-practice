@@ -1,23 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe "Tags", type: :request do
-  describe "GET /create" do
+  describe "POST /create" do
     it "returns http success" do
-      get "/tags/create"
+      post "/api/v1/tags"
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /delete" do
+  describe "PATCH /delete" do
     it "returns http success" do
-      get "/tags/delete"
+      patch "/api/v1/tags/1"
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /update" do
+  describe "PUT /update" do
     it "returns http success" do
-      get "/tags/update"
+      put "/api/v1/tags/1"
       expect(response).to have_http_status(:success)
     end
   end
