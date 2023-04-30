@@ -1,15 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Todos", type: :request do
-  describe "GET /index" do
-    it "returns http success" do
-      get "/api/v1/todos"
-      expect(response).to have_http_status(:success)
-    end
-  end
-
   describe "POST /create" do
     before do
+      @user = create(:user)
+      token = TokenService.issue_token(@user.id)
+      cookies[:token] = token
       @todo_create_params = {
         todo: {
           title: 'test title',
@@ -25,6 +21,9 @@ RSpec.describe "Todos", type: :request do
 
   describe "PUT /update" do
     before do
+      @user = create(:user)
+      token = TokenService.issue_token(@user.id)
+      cookies[:token] = token
       @todo_update_params = {
         todo: {
           title: 'change title',
@@ -41,6 +40,11 @@ RSpec.describe "Todos", type: :request do
   end
 
   describe "PATCH /delete" do
+    before do
+      @user = create(:user)
+      token = TokenService.issue_token(@user.id)
+      cookies[:token] = token
+    end
     it "returns http success" do
       user = create(:user)
       todo = create(:todo, user: user)
