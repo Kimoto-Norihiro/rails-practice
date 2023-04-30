@@ -1,4 +1,6 @@
 class Api::V1::TodosController < ApplicationController
+  before_action :set_todo, only: [:update, :destroy]
+
   def index
     todos = Todo.all()
     render json: todos
@@ -14,8 +16,7 @@ class Api::V1::TodosController < ApplicationController
   end
 
   def destroy 
-    @todo = Todo.find(params[:id])
-    render json: @todo.destroy
+    @todo.destroy
   end
 
   def update
@@ -24,5 +25,14 @@ class Api::V1::TodosController < ApplicationController
     else
       render json: @todo.errors
     end
+  end
+
+  private
+  def todo_params
+    params.require(:todo).permit(:title, :description, :user_id, :tag_id)
+  end
+
+  def set_todo
+    @todo = Todo.find(params[:id])
   end
 end
