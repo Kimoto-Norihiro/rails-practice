@@ -1,54 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe "Tags", type: :request do
-  before do
-    @user = create(:user)
-    token = TokenService.issue_token(@user.id)
-    cookies[:token] = token
-    @tag_create_params = {
-      tag: {
-        name: 'test name',
-      }
-    }
-  end
+  let (:user) { create(:user) }
+  let (:token) { TokenService.issue_token(user.id) }
+  before { cookies[:token] = token }
+
   describe "POST /create" do
     it "returns http success" do
-      post "/api/v1/tags", params: @tag_create_params
+      post api_v1_tags_path(), params: { tag: attributes_for(:tag) }
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "PUT /update" do
-    before do
-      @user = create(:user)
-      token = TokenService.issue_token(@user.id)
-      cookies[:token] = token
-      @tag_update_params = {
-        tag: {
-          name: 'change name'
-        }
-      }
-    end
     it "returns http success" do
       user = create(:user)
       tag = create(:tag, user: user)
 
-      put "/api/v1/tags/#{tag.id}", params: @tag_update_params
+      put api_v1_tag_path(tag.id), params: { tag: { name: 'change name' } }
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "PATCH /delete" do
-    before do
-      @user = create(:user)
-      token = TokenService.issue_token(@user.id)
-      cookies[:token] = token
-    end
     it "returns http success" do
       user = create(:user)
       tag = create(:tag, user: user)
 
-      delete "/api/v1/tags/#{tag.id}"
+      delete api_v1_tag_path(tag.id)
       expect(response).to have_http_status(:success)
     end
   end

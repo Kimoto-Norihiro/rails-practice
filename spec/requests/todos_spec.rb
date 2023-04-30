@@ -1,55 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe "Todos", type: :request do
+  let (:user) { create(:user) }
+  let (:token) { TokenService.issue_token(user.id) }
+  before { cookies[:token] = token }
+
   describe "POST /create" do
-    before do
-      @user = create(:user)
-      token = TokenService.issue_token(@user.id)
-      cookies[:token] = token
-      @todo_create_params = {
-        todo: {
-          title: 'test title',
-          body: 'test body',
-        }
-      }
-    end
     it "returns http success" do
-      post "/api/v1/todos", params: @todo_create_params
+      post api_v1_todos_path(), params: { todo: attributes_for(:todo) }
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "PUT /update" do
-    before do
-      @user = create(:user)
-      token = TokenService.issue_token(@user.id)
-      cookies[:token] = token
-      @todo_update_params = {
-        todo: {
-          title: 'change title',
-        }
-      }
-    end
     it "returns http success" do
       user = create(:user)
       todo = create(:todo, user: user)
 
-      put "/api/v1/todos/#{todo.id}", params: @todo_update_params
+      put api_v1_todo_path(todo.id), params: { todo: { title: 'change title' }}
       expect(response).to have_http_status(:success)
     end
   end
 
   describe "PATCH /delete" do
-    before do
-      @user = create(:user)
-      token = TokenService.issue_token(@user.id)
-      cookies[:token] = token
-    end
     it "returns http success" do
       user = create(:user)
       todo = create(:todo, user: user)
 
-      delete "/api/v1/todos/#{todo.id}"
+      delete api_v1_todo_path(todo.id)
       expect(response).to have_http_status(:success)
     end
   end
