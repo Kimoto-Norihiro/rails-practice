@@ -1,8 +1,10 @@
 class Api::V1::TagsController < ApplicationController
-  before_action :set_tag, only: [:update, :destroy]
+  include Authenticatable
+  before_action :authenticate_with_token!
+  before_action :set_tag, except: [:create]
 
   def create
-    tag = Tag.new(tag_params)
+    tag = current_user.tags.new(tag_params)
     if tag.save
       render json: tag
     else

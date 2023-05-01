@@ -1,13 +1,10 @@
 class Api::V1::TodosController < ApplicationController
+  include Authenticatable
+  before_action :authenticate_with_token!
   before_action :set_todo, only: [:update, :destroy]
 
-  def index
-    todos = Todo.all()
-    render json: todos
-  end
-
   def create
-    todo = Todo.new(todo_params)
+    todo = current_user.todos.new(todo_params)
     if todo.save
       render json: todo
     else
